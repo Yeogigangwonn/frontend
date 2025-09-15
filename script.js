@@ -37,7 +37,7 @@ class BackendTester {
 
         // 초기 상태 설정
         this.updateStatus('disconnected', '서버 연결 확인 필요');
-        this.addLog('🚀 여기강원 백엔드 테스트 페이지가 로드되었습니다.', 'info');
+        this.addLog('여기강원 백엔드 테스트 페이지가 로드되었습니다.', 'info');
 
         // URL 입력 필드 변경 감지
         this.springUrlInput.addEventListener('input', (e) => {
@@ -81,13 +81,13 @@ class BackendTester {
 
     clearLogs() {
         this.logsContainer.innerHTML = '';
-        this.addLog('📝 로그가 지워졌습니다.', 'info');
+        this.addLog('로그가 지워졌습니다.', 'info');
     }
 
     async makeRequest(url, method = 'GET', body = null, requestName = '') {
         const startTime = Date.now();
         
-        this.addLog(`🔄 요청 시작: ${method} ${url}`, 'info');
+        this.addLog(`요청 시작: ${method} ${url}`, 'info');
         this.lastRequest.textContent = requestName || `${method} ${url}`;
         this.updateStatus('connecting', '연결 중...');
 
@@ -124,11 +124,11 @@ class BackendTester {
 
             if (response.ok) {
                 this.updateStatus('connected', '연결 성공');
-                this.addLog(`✅ 응답 성공: ${response.status} (${responseTime}ms)`, 'success');
+                this.addLog(`응답 성공: ${response.status} (${responseTime}ms)`, 'success');
                 return { success: true, response, data: responseText, responseTime, json: JSON.parse(responseText || '{}') };
             } else {
                 this.updateStatus('error', `오류: ${response.status}`);
-                this.addLog(`❌ 응답 오류: ${response.status} ${response.statusText}`, 'error');
+                this.addLog(`응답 오류: ${response.status} ${response.statusText}`, 'error');
                 return { success: false, response, data: responseText, responseTime };
             }
 
@@ -141,20 +141,20 @@ class BackendTester {
             this.responseData.textContent = error.message;
 
             this.updateStatus('error', '연결 실패');
-            this.addLog(`🚫 연결 실패: ${error.message}`, 'error');
+            this.addLog(`연결 실패: ${error.message}`, 'error');
             
             return { success: false, error, responseTime };
         }
     }
 
     async checkAllServers() {
-        this.addLog('🔍 서버 상태 자동 확인을 시작합니다...', 'info');
+        this.addLog('서버 상태 자동 확인을 시작합니다...', 'info');
         await this.testSpringBoot(false);
         await this.testPythonAPI(false);
     }
 
     async testSpringBoot(verbose = true) {
-        if (verbose) this.addLog('🍃 Spring Boot 서버 연결 테스트를 시작합니다.', 'info');
+        if (verbose) this.addLog('Spring Boot 서버 연결 테스트를 시작합니다.', 'info');
         
         // Spring Boot Actuator health endpoint 시도
         const healthEndpoints = ['/actuator/health', '/health', '/api/health'];
@@ -163,42 +163,42 @@ class BackendTester {
         for (const endpoint of healthEndpoints) {
             const result = await this.makeRequest(`${this.springUrl}${endpoint}`, 'GET', null, `Spring Boot Health Check (${endpoint})`);
             if (result.success) {
-                this.updateServerStatus('spring', '✅ 연결됨');
-                if (verbose) this.addLog(`🎉 Spring Boot 서버가 ${endpoint}에서 응답합니다!`, 'success');
+                this.updateServerStatus('spring', '연결됨');
+                if (verbose) this.addLog(`Spring Boot 서버가 ${endpoint}에서 응답합니다!`, 'success');
                 connected = true;
                 break;
             }
         }
 
         if (!connected) {
-            this.updateServerStatus('spring', '❌ 연결 실패');
-            if (verbose) this.addLog('⚠️ Spring Boot 서버에 연결할 수 없습니다.', 'error');
+            this.updateServerStatus('spring', '연결 실패');
+            if (verbose) this.addLog('Spring Boot 서버에 연결할 수 없습니다.', 'error');
         }
     }
 
     async testPythonAPI(verbose = true) {
-        if (verbose) this.addLog('🐍 Python API 서버 연결 테스트를 시작합니다.', 'info');
+        if (verbose) this.addLog('Python API 서버 연결 테스트를 시작합니다.', 'info');
         
         // Python API health check (기본 endpoint 시도)
         const result = await this.makeRequest(`${this.pythonUrl}/`, 'GET', null, 'Python API Health Check');
         
         if (result.success) {
-            this.updateServerStatus('python', '✅ 연결됨');
-            if (verbose) this.addLog('🎉 Python API 서버가 응답합니다!', 'success');
+            this.updateServerStatus('python', '연결됨');
+            if (verbose) this.addLog('Python API 서버가 응답합니다!', 'success');
         } else {
-            this.updateServerStatus('python', '❌ 연결 실패');
-            if (verbose) this.addLog('⚠️ Python API 서버에 연결할 수 없습니다.', 'error');
+            this.updateServerStatus('python', '연결 실패');
+            if (verbose) this.addLog('Python API 서버에 연결할 수 없습니다.', 'error');
         }
     }
 
     async testPlacesAPI() {
-        this.addLog('🏞️ 관광지 API 테스트를 시작합니다.', 'info');
+        this.addLog('관광지 API 테스트를 시작합니다.', 'info');
         
         const lat = parseFloat(this.testLat.value);
         const lon = parseFloat(this.testLon.value);
         
         if (isNaN(lat) || isNaN(lon)) {
-            this.addLog('❌ 유효한 위도/경도를 입력해주세요.', 'error');
+            this.addLog('유효한 위도/경도를 입력해주세요.', 'error');
             return;
         }
 
@@ -208,46 +208,46 @@ class BackendTester {
         
         if (allPlacesResult.success) {
             const places = allPlacesResult.json;
-            this.addLog(`✅ 총 ${places.length}개의 관광지 데이터를 확인했습니다.`, 'success');
+            this.addLog(`총 ${places.length}개의 관광지 데이터를 확인했습니다.`, 'success');
         }
 
         // 2. 근처 관광지 조회
-        this.addLog(`📍 위치 (${lat}, ${lon}) 근처 관광지를 조회합니다...`, 'info');
+        this.addLog(`위치 (${lat}, ${lon}) 근처 관광지를 조회합니다...`, 'info');
         await this.makeRequest(`${this.springUrl}/api/places/nearby?lat=${lat}&lon=${lon}&limit=5`, 'GET', null, '근처 관광지 조회');
     }
 
     async testWeatherAPI() {
-        this.addLog('🌤️ 날씨 API 테스트를 시작합니다.', 'info');
+        this.addLog('날씨 API 테스트를 시작합니다.', 'info');
         
         const lat = parseFloat(this.testLat.value);
         const lon = parseFloat(this.testLon.value);
         
         if (isNaN(lat) || isNaN(lon)) {
-            this.addLog('❌ 유효한 위도/경도를 입력해주세요.', 'error');
+            this.addLog('유효한 위도/경도를 입력해주세요.', 'error');
             return;
         }
 
-        this.addLog(`🌡️ 위치 (${lat}, ${lon})의 날씨 정보를 조회합니다...`, 'info');
+        this.addLog(`위치 (${lat}, ${lon})의 날씨 정보를 조회합니다...`, 'info');
         await this.makeRequest(`${this.springUrl}/api/weather?lat=${lat}&lon=${lon}`, 'GET', null, '날씨 정보 조회');
     }
 
     async testRecommendAPI() {
-        this.addLog('🎯 관광지 추천 API 테스트를 시작합니다.', 'info');
+        this.addLog('관광지 추천 API 테스트를 시작합니다.', 'info');
         
         const lat = parseFloat(this.testLat.value);
         const lon = parseFloat(this.testLon.value);
         
         if (isNaN(lat) || isNaN(lon)) {
-            this.addLog('❌ 유효한 위도/경도를 입력해주세요.', 'error');
+            this.addLog('유효한 위도/경도를 입력해주세요.', 'error');
             return;
         }
 
         // 1. 거리 기반 추천
-        this.addLog(`🚗 위치 (${lat}, ${lon}) 기반 거리 추천을 조회합니다...`, 'info');
+        this.addLog(`위치 (${lat}, ${lon}) 기반 거리 추천을 조회합니다...`, 'info');
         await this.makeRequest(`${this.springUrl}/api/places/recommended?lat=${lat}&lon=${lon}&limit=5&transport=car`, 'GET', null, '거리 기반 추천');
 
         // 2. 종합 추천 (POST 방식)
-        this.addLog(`🌟 종합 추천 API를 테스트합니다...`, 'info');
+        this.addLog(`종합 추천 API를 테스트합니다...`, 'info');
         const recommendRequest = {
             latitude: lat,
             longitude: lon,
@@ -264,7 +264,7 @@ class BackendTester {
         await this.makeRequest(`${this.springUrl}/api/places/recommend`, 'POST', recommendRequest, '종합 추천 API');
 
         // 3. 날씨 기반 추천
-        this.addLog(`🌤️ 날씨 기반 추천을 조회합니다...`, 'info');
+        this.addLog(`날씨 기반 추천을 조회합니다...`, 'info');
         await this.makeRequest(`${this.springUrl}/api/places/recommend/weather-based?lat=${lat}&lon=${lon}&limit=3`, 'GET', null, '날씨 기반 추천');
     }
 
@@ -274,7 +274,7 @@ class BackendTester {
         const lon = parseFloat(this.testLon.value);
         
         if (isNaN(lat) || isNaN(lon)) {
-            this.addLog('❌ 유효한 위도/경도를 입력해주세요.', 'error');
+            this.addLog('유효한 위도/경도를 입력해주세요.', 'error');
             return null;
         }
 
@@ -297,7 +297,7 @@ class BackendTester {
     }
 
     async testDistanceRecommend() {
-        this.addLog('🚗 거리 기반 추천 테스트를 시작합니다.', 'info');
+        this.addLog('거리 기반 추천 테스트를 시작합니다.', 'info');
         
         const settings = this.getRecommendationSettings();
         if (!settings) return;
@@ -305,12 +305,12 @@ class BackendTester {
         const transport = settings.transportationMode === 'CAR' ? 'car' : 'walk';
         const url = `${this.springUrl}/api/places/recommended?lat=${settings.lat}&lon=${settings.lon}&limit=${settings.limit}&transport=${transport}`;
         
-        this.addLog(`📍 위치: (${settings.lat}, ${settings.lon}), 이동수단: ${transport}, 개수: ${settings.limit}`, 'info');
+        this.addLog(`위치: (${settings.lat}, ${settings.lon}), 이동수단: ${transport}, 개수: ${settings.limit}`, 'info');
         await this.makeRequest(url, 'GET', null, '거리 기반 추천');
     }
 
     async testComprehensiveRecommend() {
-        this.addLog('🌟 종합 추천 테스트를 시작합니다.', 'info');
+        this.addLog('종합 추천 테스트를 시작합니다.', 'info');
         
         const settings = this.getRecommendationSettings();
         if (!settings) return;
@@ -328,24 +328,24 @@ class BackendTester {
             considerTravelTime: settings.considerTravelTime
         };
         
-        this.addLog(`🎯 설정: 테마=${settings.preferredThemes.join(',')}, 거리=${settings.maxDistance}km, 개수=${settings.limit}`, 'info');
+        this.addLog(`설정: 테마=${settings.preferredThemes.join(',')}, 거리=${settings.maxDistance}km, 개수=${settings.limit}`, 'info');
         await this.makeRequest(`${this.springUrl}/api/places/recommend`, 'POST', recommendRequest, '종합 추천 API');
     }
 
     async testWeatherRecommend() {
-        this.addLog('🌤️ 날씨 기반 추천 테스트를 시작합니다.', 'info');
+        this.addLog('날씨 기반 추천 테스트를 시작합니다.', 'info');
         
         const settings = this.getRecommendationSettings();
         if (!settings) return;
 
         const url = `${this.springUrl}/api/places/recommend/weather-based?lat=${settings.lat}&lon=${settings.lon}&limit=${settings.limit}&transportationMode=${settings.transportationMode}&maxTravelTime=${settings.maxTravelTime}`;
         
-        this.addLog(`🌡️ 위치: (${settings.lat}, ${settings.lon}), 이동수단: ${settings.transportationMode}, 개수: ${settings.limit}`, 'info');
+        this.addLog(`위치: (${settings.lat}, ${settings.lon}), 이동수단: ${settings.transportationMode}, 개수: ${settings.limit}`, 'info');
         await this.makeRequest(url, 'GET', null, '날씨 기반 추천');
     }
 
     async testAllRecommendations() {
-        this.addLog('🎯 모든 추천 기능을 순차적으로 테스트합니다.', 'info');
+        this.addLog('모든 추천 기능을 순차적으로 테스트합니다.', 'info');
         
         await this.testDistanceRecommend();
         await new Promise(resolve => setTimeout(resolve, 1000)); // 1초 대기
@@ -355,7 +355,7 @@ class BackendTester {
         
         await this.testWeatherRecommend();
         
-        this.addLog('✅ 모든 추천 테스트가 완료되었습니다!', 'success');
+        this.addLog('모든 추천 테스트가 완료되었습니다!', 'success');
     }
 }
 
