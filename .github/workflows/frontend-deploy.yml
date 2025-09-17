@@ -23,7 +23,6 @@ jobs:
 
       - name: Build frontend image
         run: |
-          cd frontend
           docker build \
             --build-arg REACT_APP_API_URL=${{ secrets.FRONTEND_API_URL }} \
             -t ${{ secrets.DOCKER_HUB_USERNAME }}/yeogigangwon-frontend:latest .
