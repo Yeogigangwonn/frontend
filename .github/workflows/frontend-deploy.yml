@@ -39,4 +39,5 @@ jobs:
             docker stop frontend-app || true
             docker rm frontend-app || true
             docker run -d --name frontend-app -p 80:80 \
+              -e REACT_APP_API_URL=http://yggangwon.info:8080 \
               ${{ secrets.DOCKER_HUB_USERNAME }}/yeogigangwon-frontend:latest
