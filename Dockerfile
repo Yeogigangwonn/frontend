@@ -7,13 +7,14 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
-# 소스 복사 후 빌드
+# 소스 복사
 COPY . .
 
 # GitHub Actions에서 전달받은 API URL
 ARG REACT_APP_API_URL
 ENV REACT_APP_API_URL=$REACT_APP_API_URL
 
+# React 빌드 (빌드 타임에 API URL이 반영됨)
 RUN npm run build
 
 # 2단계: Production stage (Nginx)
