@@ -1,25 +1,27 @@
-# 1단계: Build stage
+# 1단계: Build stage (Node.js로 React 빌드)
 FROM node:18-alpine AS build
 
-# 작업 디렉토리
 WORKDIR /app
 
-# package.json, package-lock.json 복사 후 의존성 설치
+# 의존성 설치
 COPY package*.json ./
 RUN npm install
 
 # 소스 복사 후 빌드
 COPY . .
+
+# GitHub Actions에서 전달받은 API URL
+ARG REACT_APP_API_URL
+ENV REACT_APP_API_URL=$REACT_APP_API_URL
+
 RUN npm run build
 
-# 2단계: Production stage (Nginx 사용)
+# 2단계: Production stage (Nginx)
 FROM nginx:alpine
 
-# Nginx 기본 설정 제거 후 커스텀 conf 복사 가능
+# 빌드 결과물을 Nginx 기본 경로에 복사
 COPY --from=build /app/build /usr/share/nginx/html
 
-# 기본 포트 80 오픈
 EXPOSE 80
 
-# Nginx 실행
 CMD ["nginx", "-g", "daemon off;"]
