@@ -23,7 +23,9 @@ jobs:
       - name: Build frontend image
         run: |
           cd frontend
-          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/yeogigangwon-frontend:latest .
+          docker build \
+            --build-arg REACT_APP_API_URL=${{ secrets.FRONTEND_API_URL }} \
+            -t ${{ secrets.DOCKER_HUB_USERNAME }}/yeogigangwon-frontend:latest .
 
       - name: Push frontend image
         run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/yeogigangwon-frontend:latest
@@ -39,5 +41,4 @@ jobs:
             docker stop frontend-app || true
             docker rm frontend-app || true
             docker run -d --name frontend-app -p 80:80 \
-              -e REACT_APP_API_URL=http://yggangwon.info:8080 \
               ${{ secrets.DOCKER_HUB_USERNAME }}/yeogigangwon-frontend:latest
