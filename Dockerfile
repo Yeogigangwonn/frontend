@@ -1,20 +1,25 @@
-# Python 3.10 slim 이미지 사용
-FROM python:3.10-slim
+# 1단계: Build stage
+FROM node:18-alpine AS build
 
-# 컨테이너 내부 작업 디렉토리 설정
+# 작업 디렉토리
 WORKDIR /app
 
-# 필요한 의존성 설치 (Flask 같은거 필요없음, 기본 내장 http.server 대신 server.py 사용 가능)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3 \
-    python3-pip \
-    && rm -rf /var/lib/apt/lists/*
+# package.json, package-lock.json 복사 후 의존성 설치
+COPY package*.json ./
+RUN npm install
 
-# 프론트엔드 파일 복사
+# 소스 복사 후 빌드
 COPY . .
+RUN npm run build
 
-# 기본 포트 8080 사용 (원하는 경우 변경 가능)
-EXPOSE 8080
+# 2단계: Production stage (Nginx 사용)
+FROM nginx:alpine
 
-# server.py 실행 (기본 포트: 8080)
-CMD ["python3", "server.py", "8080"]
+# Nginx 기본 설정 제거 후 커스텀 conf 복사 가능
+COPY --from=build /app/build /usr/share/nginx/html
+
+# 기본 포트 80 오픈
+EXPOSE 80
+
+# Nginx 실행
+CMD ["nginx", "-g", "daemon off;"]
