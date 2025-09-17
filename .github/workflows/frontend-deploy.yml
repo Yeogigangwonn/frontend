@@ -4,8 +4,7 @@ on:
   push:
     branches: [ "main" ]
     paths:
-      - "frontend/**"
-  workflow_dispatch:
+      - "**"
 
 jobs:
   build-and-deploy:
@@ -24,7 +23,6 @@ jobs:
       - name: Build frontend image
         run: |
           docker build \
-            --build-arg REACT_APP_API_URL=${{ secrets.FRONTEND_API_URL }} \
             -t ${{ secrets.DOCKER_HUB_USERNAME }}/yeogigangwon-frontend:latest .
 
       - name: Push frontend image
